@@ -2,12 +2,17 @@ package Fishtechy.Pages;
 
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.ios.IOSDriver;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import io.appium.java_client.pagefactory.AndroidFindBy;
+import io.appium.java_client.pagefactory.AppiumFieldDecorator;
+import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import io.appium.java_client.android.AndroidDriver;
 
@@ -19,13 +24,34 @@ import java.util.List;
 
 //using android driver for keyboard escape
 public class ContestCreate {
-    private AndroidDriver driver;
+    private IOSDriver driver;   //AndroidDriver write this for android
     private WebDriverWait wait;
 
-    public ContestCreate(AndroidDriver driver) {
+    public ContestCreate(IOSDriver driver) {   //AndroidDriver write this for android
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        PageFactory.initElements(new AppiumFieldDecorator(driver), this);
     }
+
+    //for contest name
+    @AndroidFindBy(xpath = "//android.widget.EditText[@resource-id=\"name_textfield\"]/android.widget.EditText")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeTextField[@name=\"Enter contest name\"]")
+    private WebElement nameField;
+
+    //for angler style
+    @AndroidFindBy(xpath = "(//android.widget.Button[@content-desc=\"-Select-\"])[1]")
+    @iOSXCUITFindBy(xpath = "(//XCUIElementTypeButton[@name=\"-Select-\"])[1]")
+    private WebElement anglerStyle;
+
+    //forend date
+    @AndroidFindBy(xpath = "//XCUIElementTypeOther[@name=\"Select date\"]")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeOther[@name=\"Select date\"]")
+    private WebElement endDate;
+
+    //camera type
+    @AndroidFindBy(xpath = "//android.widget.Button[@content-desc=\"-Select-\"]")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeButton[@name=\"-Select-\"]")
+    private WebElement cameraType;
 
     //creating contest choosing solo, invite only, proof ball with bump board
     public void ContestStep() {
@@ -34,8 +60,9 @@ public class ContestCreate {
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.accessibilityId("Create Contest"))).click();
 
-        WebElement nameField = wait.until(ExpectedConditions.elementToBeClickable(
-                AppiumBy.xpath("//android.widget.EditText[@resource-id=\"name_textfield\"]/android.widget.EditText")));
+//        WebElement nameField = wait.until(ExpectedConditions.elementToBeClickable(
+//                AppiumBy.xpath("//android.widget.EditText[@resource-id=\"name_textfield\"]/android.widget.EditText")));
+
         nameField.click();
         nameField.sendKeys("prashnacontest");
 
@@ -55,26 +82,32 @@ public class ContestCreate {
         }
 
 
-        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("(//android.widget.Button[@content-desc=\"-Select-\"])[1]"))).click();
+        //wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("(//android.widget.Button[@content-desc=\"-Select-\"])[1]"))).click();
+        anglerStyle.click();
         wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Both"))).click();
         System.out.println("angler style clicked");
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("(//android.widget.Button[@content-desc=\"-Select-\"])[1]"))).click();
+        //wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("(//android.widget.Button[@content-desc=\"-Select-\"])[1]"))).click();
+        anglerStyle.click(); //same xpath for measurement
         wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Proofball with Bumpboard"))).click();
         System.out.println("measurement type selected");
 
 
-        Time(10, 47);
+        Time(3, 47);
         System.out.println("start date");
 
-        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//android.widget.EditText[@resource-id=\"end_date_textfield\"]/android.view.View"))).click();
+        endDate.click();
+        //wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//android.widget.EditText[@resource-id=\"end_date_textfield\"]/android.view.View"))).click();
+
         //change end date manually cause no dynamic way
-        wait.until(ExpectedConditions.elementToBeClickable(
-                AppiumBy.xpath("//android.widget.FrameLayout[@resource-id=\"android:id/content\"]/android.widget.FrameLayout/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View[1]/android.view.View/android.view.View[11]/android.view.View/android.view.View/android.view.View/android.view.View/android.view.View[17]"))).click();
+        Time(6, 50);
+//        wait.until(ExpectedConditions.elementToBeClickable(
+//                AppiumBy.xpath("//android.widget.FrameLayout[@resource-id=\"android:id/content\"]/android.widget.FrameLayout/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View[1]/android.view.View/android.view.View[11]/android.view.View/android.view.View/android.view.View/android.view.View/android.view.View[17]"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Done"))).click();
         System.out.println("end date");
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("//android.widget.Button[@content-desc=\"-Select-\"]"))).click();
+        //wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("//android.widget.Button[@content-desc=\"-Select-\"]"))).click();
+        cameraType.click();
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Fishtechy Camera"))).click();
 
 
@@ -206,28 +239,49 @@ public class ContestCreate {
 
     }
 
+   @AndroidFindBy(xpath = "//android.widget.EditText[@resource-id='start_date_textfield']/android.view.View")
+   @iOSXCUITFindBy(xpath = "(//XCUIElementTypeOther[@name=\"Select date\"])[1]")
+   private WebElement startDate;
+
+    @AndroidFindBy(xpath = "//android.view.View[contains(@content-desc, ':')]")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeStaticText[contains(@name, ':')]")
+    private WebElement time;
+
+    @AndroidFindBy(xpath = "//android.widget.SeekBar[contains(@content-desc,'minute')]")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeOther[@value, 'minute']")
+    private WebElement minWheel;
+
+    @AndroidFindBy(xpath = "//android.widget.SeekBar[contains(@content-desc,\"o'clock\")]")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeOther[@value,\"o'clock\")]")
+    private WebElement hourWheel;
+
     //complicated time selection because time selection is only on clockwise
     //but went anti in some case so
     public void Time(int targetHour, int targetMinute) {
         // select the start date
-        driver.findElement(AppiumBy.xpath(
-                "//android.widget.EditText[@resource-id='start_date_textfield']/android.view.View")).click();
+//        driver.findElement(AppiumBy.xpath(
+//                "//android.widget.EditText[@resource-id='start_date_textfield']/android.view.View")).click();
+
+       startDate.click();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         // select the time
-        wait.until(ExpectedConditions.elementToBeClickable(
-                AppiumBy.xpath("//android.view.View[contains(@content-desc, ':')]"))).click();
+//        wait.until(ExpectedConditions.elementToBeClickable(
+//                AppiumBy.xpath("//android.view.View[contains(@content-desc, ':')]"))).click();
+            time.click();
 
         // select minute wheel
-        WebElement minWheel = wait.until(ExpectedConditions.presenceOfElementLocated(
-                AppiumBy.xpath("//android.widget.SeekBar[contains(@content-desc,'minute')]")));
+        minWheel.click();
+//        WebElement minWheel = wait.until(ExpectedConditions.presenceOfElementLocated(
+//                AppiumBy.xpath("//android.widget.SeekBar[contains(@content-desc,'minute')]")));
         spinForwardOnly(minWheel, targetMinute, 60);
 
         // select hour wheel
-        WebElement hourWheel = wait.until(ExpectedConditions.presenceOfElementLocated(
-                AppiumBy.xpath("//android.widget.SeekBar[contains(@content-desc,\"o'clock\")]")));
-        //
+        hourWheel.click();
+//        WebElement hourWheel = wait.until(ExpectedConditions.presenceOfElementLocated(
+//                AppiumBy.xpath("//android.widget.SeekBar[contains(@content-desc,\"o'clock\")]")));
+
         int normalizedHour = (targetHour % 12 == 0) ? 12 : (targetHour % 12);
         spinForwardOnly(hourWheel, normalizedHour, 12);
 

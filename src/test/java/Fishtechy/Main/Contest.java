@@ -4,6 +4,7 @@ import Fishtechy.Basee.Capability;
 import Fishtechy.Pages.ContestCreate;
 import Fishtechy.Pages.LoginCode;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -33,13 +34,13 @@ public class Contest extends Capability {
     public void ContestTime() throws InterruptedException {
 
         LoginCode loginPage = new LoginCode(driver);
-        ContestCreate contest = new ContestCreate((AndroidDriver) driver);
+        ContestCreate contest = new ContestCreate((IOSDriver) driver); //AndroidDriver write this for android
 
         // User 1: create contest + invite
         User creator = users.get(0);
         loginPage.enterEmail(creator.email, creator.password);
         loginPage.handlePermission();
-        loginPage.CameraGuide();
+        //loginPage.CameraGuide();
 
         contest.ContestStep();
         //contest.invite("aman");

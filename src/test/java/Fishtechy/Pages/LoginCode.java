@@ -2,10 +2,14 @@ package Fishtechy.Pages;
 
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.pagefactory.AndroidFindBy;
+import io.appium.java_client.pagefactory.AppiumFieldDecorator;
+import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -18,34 +22,68 @@ public class LoginCode {
     public LoginCode(AppiumDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        PageFactory.initElements(new AppiumFieldDecorator(driver), this);
     }
+
+
+    // login
+    @AndroidFindBy(xpath = "//android.widget.Button[@content-desc='Login']")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeButton[@name=\"Login\"]")  // <-- Add iOS XPath here
+    private WebElement loginButton;
+
+    // continue with email
+    @AndroidFindBy(xpath = "//android.widget.ImageView[@content-desc='Continue with Email']")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeButton[@name=\"email_button\"]")  // iOS XPath
+    private WebElement continueWithEmail;
+
+    // Text fields
+    @AndroidFindBy(xpath = "(//android.widget.EditText)[2]")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeTextField[@name=\"Email\"]")  // iOS email field
+    private WebElement emailField;
+
+    @AndroidFindBy(xpath = "(//android.widget.EditText)[4]")
+    @iOSXCUITFindBy(accessibility = "toggle_visibility") // iOS password field
+    private WebElement passwordField;
+
+    @AndroidFindBy(xpath = "//android.widget.Button[@content-desc='Login']")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeButton[@name=\"Login\"]")
+    private WebElement finalLoginBtn;
 
     public void enterEmail(String email, String password) throws InterruptedException {
-        WebElement loginBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//android.widget.Button[@content-desc='Login']")));
-        loginBtn.click();
-
-        WebElement continueWithEmail = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//android.widget.ImageView[@content-desc='Continue with Email']")));
-        continueWithEmail.click();
-
-        WebElement emailField = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("(//android.widget.EditText)[2]")));
-        emailField.click();
-        Thread.sleep(2000);
-        emailField.sendKeys(email);
-
-        WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("(//android.widget.EditText)[4]")));
-        passwordField.click();
-        Thread.sleep(2000);
-        passwordField.sendKeys(password);
-
-        WebElement finalLoginBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//android.widget.Button[@content-desc='Login']")));
-        finalLoginBtn.click();
-        Thread.sleep(2000);
+        wait.until(ExpectedConditions.visibilityOf(loginButton)).click();
+        wait.until(ExpectedConditions.visibilityOf(continueWithEmail)).click();
+        wait.until(ExpectedConditions.visibilityOf(emailField)).sendKeys(email);
+        wait.until(ExpectedConditions.visibilityOf(passwordField)).sendKeys(password);
+        wait.until(ExpectedConditions.visibilityOf(finalLoginBtn)).click();
     }
+
+
+//    public void enterEmail(String email, String password) throws InterruptedException {
+//        WebElement loginBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(
+//                By.xpath("//android.widget.Button[@content-desc='Login']")));
+//        loginBtn.click();
+//
+//        WebElement continueWithEmail = wait.until(ExpectedConditions.visibilityOfElementLocated(
+//                By.xpath("//android.widget.ImageView[@content-desc='Continue with Email']")));
+//        continueWithEmail.click();
+//
+//        WebElement emailField = wait.until(ExpectedConditions.visibilityOfElementLocated(
+//                By.xpath("(//android.widget.EditText)[2]")));
+//        emailField.click();
+//        Thread.sleep(2000);
+//        emailField.sendKeys(email);
+//
+//        WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(
+//                By.xpath("(//android.widget.EditText)[4]")));
+//        passwordField.click();
+//        Thread.sleep(2000);
+//        passwordField.sendKeys(password);
+//
+//        WebElement finalLoginBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(
+//                By.xpath("//android.widget.Button[@content-desc='Login']")));
+//        finalLoginBtn.click();
+//        Thread.sleep(2000);
+//    }
 
     public void handlePermission(){
         try {
@@ -62,7 +100,7 @@ public class LoginCode {
     public void CameraGuide(){
         try{
         WebElement camera=wait.until(ExpectedConditions.presenceOfElementLocated(
-                AppiumBy.xpath("//android.widget.FrameLayout[@resource-id=\"android:id/content\"]/android.widget.FrameLayout/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View[1]/android.view.View[4]")));
+                AppiumBy.xpath("///XCUIElementTypeApplication[@name=\"Fishtechy(Beta)\"]/XCUIElementTypeWindow[1]/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther[2]/XCUIElementTypeOther[3]/XCUIElementTypeOther[2]/XCUIElementTypeOther[4]/XCUIElementTypeOther[2]/XCUIElementTypeImage")));
                 camera.click();
             System.out.println("first step clicked");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));

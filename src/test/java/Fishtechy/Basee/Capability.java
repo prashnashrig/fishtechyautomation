@@ -3,6 +3,7 @@ package Fishtechy.Basee;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.*;
 
@@ -16,14 +17,21 @@ public class Capability {
     @BeforeMethod
     public void setUp() throws MalformedURLException {
         DesiredCapabilities dc = new DesiredCapabilities();
-        dc.setCapability("platformName", "Android");
-        dc.setCapability("appium:deviceName", "Android");
-        dc.setCapability("appium:automationName", "uiautomator2");
-        dc.setCapability("appium:appPackage", "io.futrix.flytechy.stg");
-        dc.setCapability("appium:appActivity", "io.futrix.flytechy.MainActivity");
+//        dc.setCapability("platformName", "Android");
+//        dc.setCapability("appium:deviceName", "Android");
+//        dc.setCapability("appium:automationName", "uiautomator2");
 
-        driver = new AndroidDriver(new URL("http://127.0.0.1:4723"), dc);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        dc.setCapability("platformName", "iOS");
+        dc.setCapability("appium:automationName", "XCUITest");
+        dc.setCapability("appium:deviceName", "iPhone 13 Pro Max");
+        dc.setCapability("appium:bundleId", "io.futrix.flytechy.stg");
+
+        dc.setCapability("appium:udid", "00008110-000A14621E61401E");
+        //driver = new AndroidDriver(new URL("http://127.0.0.1:4723"), dc);
+        driver = new IOSDriver(new URL("http://127.0.0.1:4723/"), dc);
+
+        System.out.println("Session started on iOS!");
+
     }
 
     @AfterMethod
