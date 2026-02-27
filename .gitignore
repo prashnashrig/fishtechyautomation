@@ -1,0 +1,20 @@
+# Mac
+.DS_Store
+
+# Maven
+target/
+
+# Logs
+*.log
+
+# Reports
+reports/
+test-report/
+surefire-reports/
+
+# IDE
+.idea/
+*.iml
+
+# OS
+Thumbs.db
