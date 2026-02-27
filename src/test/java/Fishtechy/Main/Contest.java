@@ -24,28 +24,35 @@ public class Contest extends Capability {
         List<User> users = Arrays.asList(
                 new User("testershrig+2@gmail.com", "TestTest"), // Contest creator
                 new User("testershrig+1@gmail.com", "TestTest"), // invited users
-                new User("testershrig+3@gmail.com", "TestTest"),
-                new User("testershrig+4@gmail.com", "TestTest"),
-                new User("testershrig+5@gmail.com", "TestTest"),
-                new User("testershrig+6@gmail.com", "TestTest")
+                new User("testershrig+3@gmail.com", "TestTest")
+//                new User("testershrig+4@gmail.com", "TestTest"),
+//                new User("testershrig+5@gmail.com", "TestTest"),
+//                new User("testershrig+6@gmail.com", "TestTest")
         );
 
     @Test
     public void ContestTime() throws InterruptedException {
 
         LoginCode loginPage = new LoginCode(driver);
-        ContestCreate contest = new ContestCreate((IOSDriver) driver); //AndroidDriver write this for android
+       // ContestCreate contest = new ContestCreate((IOSDriver) driver); //AndroidDriver write this for android
+
+        ContestCreate contest = new ContestCreate((AndroidDriver) driver);
 
         // User 1: create contest + invite
         User creator = users.get(0);
         loginPage.enterEmail(creator.email, creator.password);
         loginPage.handlePermission();
+        Thread.sleep(500);
+
         //loginPage.CameraGuide();
 
         contest.ContestStep();
         //contest.invite("aman");
         // multiple names to invite
-        List<String> invitees = Arrays.asList("aman1", "aman2", "aman3");
+       List<String> invitees = Arrays.asList("aman 1", "aman 3");
+       //, "aman 4", "aman 5", "aman 6"
+        //List<String> invitees = Arrays.asList("aman t2", "aman a1");
+
         contest.invite(invitees);
         contest.logout();
 

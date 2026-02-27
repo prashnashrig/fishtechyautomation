@@ -3,10 +3,7 @@ package Fishtechy.Pages;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Rectangle;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -16,7 +13,11 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SignUpCode {
     private AndroidDriver driver;
@@ -26,7 +27,7 @@ public class SignUpCode {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
-    public void Code(String email, String fullname, String password) throws InterruptedException {
+    public void Code(String email, String fullname, String passwordd) throws Exception {
         WebElement createAccount = wait.until(ExpectedConditions
                 .visibilityOfElementLocated(By.xpath("//android.widget.Button[@content-desc=\"Create Account\"]")));
         createAccount.click();
@@ -55,14 +56,26 @@ public class SignUpCode {
                 .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//android.widget.EditText[@resource-id=\"toggle_visibility\"]")));
         passwordInputField.click();
         Thread.sleep(2000);
-        passwordInputField.sendKeys(password);
+        passwordInputField.sendKeys(passwordd);
 
         WebElement signupButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//android.widget.Button[@content-desc=\"Sign Up\"]")));
         signupButton.click();
         Thread.sleep(2000);
 
-        WebElement otp = wait.until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.xpath("//android.widget.EditText[@resource-id=\"otp_textfield\"]/android.widget.EditText")));
-        otp.click();
+        // Now fetch OTP (poll up to 30 seconds)
+        String imapHost = "imap.gmail.com";
+        String imapPort = "993";
+        String username = "prashna@shrigsolutions.com";
+        String password = "xdss oomd ifrm luos"; // use app password if necessary
+
+        String otp = EmailOtpReader.fetchOtpFromInbox(imapHost, imapPort, username, password, 80);
+        System.out.println("OTP found: " + otp);
+
+        WebElement otpp = wait.until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.xpath("//android.widget.EditText[@resource-id=\"otp_textfield\"]/android.widget.EditText")));
+        otpp.click();
+
+
+
     }
     public void detail() throws InterruptedException {
         //username

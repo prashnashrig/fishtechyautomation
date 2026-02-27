@@ -24,10 +24,14 @@ import java.util.List;
 
 //using android driver for keyboard escape
 public class ContestCreate {
-    private IOSDriver driver;   //AndroidDriver write this for android
+   // private IOSDriver driver;   //AndroidDriver write this for android
+
+    private AndroidDriver driver;
     private WebDriverWait wait;
 
-    public ContestCreate(IOSDriver driver) {   //AndroidDriver write this for android
+    //public ContestCreate(IOSDriver driver)
+    public ContestCreate(AndroidDriver driver)   //AndroidDriver write this for android
+    {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         PageFactory.initElements(new AppiumFieldDecorator(driver), this);
@@ -43,10 +47,15 @@ public class ContestCreate {
     @iOSXCUITFindBy(xpath = "(//XCUIElementTypeButton[@name=\"-Select-\"])[1]")
     private WebElement anglerStyle;
 
+    @AndroidFindBy(xpath = "//android.widget.EditText[@resource-id='start_date_textfield']/android.view.View")
+    @iOSXCUITFindBy(xpath = "(//XCUIElementTypeOther[@name=\"Select date\"])[1]")
+    private WebElement startDate;
+
     //forend date
-    @AndroidFindBy(xpath = "//XCUIElementTypeOther[@name=\"Select date\"]")
+    @AndroidFindBy(xpath = "//android.widget.EditText[@resource-id='end_date_textfield']/android.view.View")
     @iOSXCUITFindBy(xpath = "//XCUIElementTypeOther[@name=\"Select date\"]")
     private WebElement endDate;
+
 
     //camera type
     @AndroidFindBy(xpath = "//android.widget.Button[@content-desc=\"-Select-\"]")
@@ -55,8 +64,8 @@ public class ContestCreate {
 
     //creating contest choosing solo, invite only, proof ball with bump board
     public void ContestStep() {
-        WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(15));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.accessibilityId("Contests"))).click();
+        WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(30));
+       wait.until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.accessibilityId("Contests"))).click();
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.accessibilityId("Create Contest"))).click();
 
@@ -92,23 +101,20 @@ public class ContestCreate {
         wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Proofball with Bumpboard"))).click();
         System.out.println("measurement type selected");
 
-
-        Time(3, 47);
+        startDate.click();
+        Time(12, 12);
         System.out.println("start date");
 
         endDate.click();
-        //wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//android.widget.EditText[@resource-id=\"end_date_textfield\"]/android.view.View"))).click();
-
         //change end date manually cause no dynamic way
-        Time(6, 50);
+        Time(30, 1);
 //        wait.until(ExpectedConditions.elementToBeClickable(
 //                AppiumBy.xpath("//android.widget.FrameLayout[@resource-id=\"android:id/content\"]/android.widget.FrameLayout/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View[1]/android.view.View/android.view.View[11]/android.view.View/android.view.View/android.view.View/android.view.View/android.view.View[17]"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Done"))).click();
-        System.out.println("end date");
+         System.out.println("end date");
 
         //wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("//android.widget.Button[@content-desc=\"-Select-\"]"))).click();
         cameraType.click();
-        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Fishtechy Camera"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("All Camera"))).click();
 
 
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Contest Banner"))).click();
@@ -127,7 +133,11 @@ public class ContestCreate {
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Add"))).click();
 
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//android.view.View[@content-desc=\"-Select-\"]"))).click();
-        wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Adriatic Brown Trout "))).click();
+        //wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Adriatic Brown Trout "))).click();
+        WebElement search= wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//android.widget.EditText")));
+        search.click();
+        search.sendKeys("Bull Trout");
+        wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Bull Trout "))).click();
 
 
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("(//android.widget.Button[@content-desc=\"-Select-\"])[1]"))).click();
@@ -148,10 +158,10 @@ public class ContestCreate {
         invite.click();
         invite.clear();
         invite.sendKeys(inviteeName);
-
-        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("(//android.widget.Button[@content-desc=\"Invite\"])[1]"))).click();
-
             driver.hideKeyboard();
+            WebElement inviteBtn = wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("(//android.widget.Button[@content-desc=\"Invite\"])[1]")));
+            inviteBtn.click();
+            System.out.println("Invite clicked for: " + inviteeName);
             System.out.println("Keyboard hidden successfully");
 
         // Wait until toast msg disappears
@@ -203,14 +213,25 @@ public class ContestCreate {
 
         //for camera upload
         wait.until(ExpectedConditions.elementToBeClickable(
-                AppiumBy.xpath("//android.widget.FrameLayout[@resource-id=\"android:id/content\"]/android.widget.FrameLayout/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View[1]/android.view.View[1]/android.view.View[3]/android.view.View[1]/android.widget.ImageView")
+                AppiumBy.xpath("//android.widget.FrameLayout[@resource-id=\"android:id/content\"]/android.widget.FrameLayout/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View[2]/android.view.View/android.view.View[2]/android.widget.ImageView")
         )).click();
          wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//android.widget.ImageView[@content-desc=\"Measure\"]"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//android.widget.Button[@resource-id=\"measurement_tutorial_popup_close_button_button\"]"))).click();
+         try {
+             wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Continue"))).click();
+             WebElement allowButton = wait.until(ExpectedConditions.presenceOfElementLocated(
+                    AppiumBy.id("com.android.permissioncontroller:id/permission_allow_all_button")
+            ));
+            allowButton.click();
+            System.out.println("System permission popup appeared and 'Allow' was clicked.");
+        } catch (TimeoutException e) {
+            System.out.println("No system permission popup appeared.");
+        }
+         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//android.widget.Button[@resource-id=\"measurement_tutorial_popup_close_button_button\"]"))).click();
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("(//android.widget.ImageView[@content-desc=\"00:04\"])[3]"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//android.widget.ImageView[@content-desc=\"00:10\"]"))).click();
 
         //  Instead of fixed index [3], pick based on parameter
+        //add int videoIndex in field
         //add int videoIndex in field
 //        List<WebElement> videos = wait.until(
 //                ExpectedConditions.presenceOfAllElementsLocatedBy(
@@ -224,24 +245,31 @@ public class ContestCreate {
 //            throw new RuntimeException("Video index " + videoIndex + " not available. Found only " + videos.size());
 //        }
 
+       // clickVideos(0);
 
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Measure Now"))).click();
-        //for photo
-        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Crop"))).click();
+
+        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Export Video"))).click();
+
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Measure Fish"))).click();
+        // Wait up to 90 seconds for Next button to appear
+        WebDriverWait longWait = new WebDriverWait(driver, Duration.ofSeconds(200));
+        WebElement nextButton = longWait.until(
+                ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Next")));
 
-        WebElement fishResult = shortWait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Next")));
-        fishResult.click();
+        nextButton.click();
+        System.out.println("Clicked Next after Measure Fish completed.");
 
-        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Contest "))).click();
+        //Released for another
+        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Retained"))).click();
 
-        //wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Export Video"))).click();
+        WebElement postButton = longWait.until(
+                ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//android.widget.Button[@content-desc='Post']"))
+        );
+        postButton.click();
+        System.out.println("Clicked Post button successfully.");
 
     }
-
-   @AndroidFindBy(xpath = "//android.widget.EditText[@resource-id='start_date_textfield']/android.view.View")
-   @iOSXCUITFindBy(xpath = "(//XCUIElementTypeOther[@name=\"Select date\"])[1]")
-   private WebElement startDate;
 
     @AndroidFindBy(xpath = "//android.view.View[contains(@content-desc, ':')]")
     @iOSXCUITFindBy(xpath = "//XCUIElementTypeStaticText[contains(@name, ':')]")
@@ -257,12 +285,12 @@ public class ContestCreate {
 
     //complicated time selection because time selection is only on clockwise
     //but went anti in some case so
-    public void Time(int targetHour, int targetMinute) {
+    public void Time( int targetMinute, int targetHour) {
         // select the start date
 //        driver.findElement(AppiumBy.xpath(
 //                "//android.widget.EditText[@resource-id='start_date_textfield']/android.view.View")).click();
 
-       startDate.click();
+
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
@@ -271,12 +299,6 @@ public class ContestCreate {
 //                AppiumBy.xpath("//android.view.View[contains(@content-desc, ':')]"))).click();
             time.click();
 
-        // select minute wheel
-        minWheel.click();
-//        WebElement minWheel = wait.until(ExpectedConditions.presenceOfElementLocated(
-//                AppiumBy.xpath("//android.widget.SeekBar[contains(@content-desc,'minute')]")));
-        spinForwardOnly(minWheel, targetMinute, 60);
-
         // select hour wheel
         hourWheel.click();
 //        WebElement hourWheel = wait.until(ExpectedConditions.presenceOfElementLocated(
@@ -284,6 +306,12 @@ public class ContestCreate {
 
         int normalizedHour = (targetHour % 12 == 0) ? 12 : (targetHour % 12);
         spinForwardOnly(hourWheel, normalizedHour, 12);
+
+        // select minute wheel
+        minWheel.click();
+//        WebElement minWheel = wait.until(ExpectedConditions.presenceOfElementLocated(
+//                AppiumBy.xpath("//android.widget.SeekBar[contains(@content-desc,'minute')]")));
+        spinForwardOnly(minWheel, targetMinute, 60);
 
         driver.findElement(AppiumBy.accessibilityId("Done")).click();
     }
@@ -333,6 +361,38 @@ public class ContestCreate {
         swipe.addAction(finger.createPointerMove(Duration.ofMillis(250), PointerInput.Origin.viewport(), centerX, centerY));
         swipe.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
         driver.perform(Collections.singletonList(swipe));
+    }
+
+    /**
+     * Click multiple videos on screen.
+     * @param videoIndices - zero-based indices of videos to click in order
+     */
+    public void clickVideos(int... videoIndices) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        // 1️⃣ Find all videos (ImageView with ':' in content-desc)
+        List<WebElement> allVideos = wait.until(
+                ExpectedConditions.presenceOfAllElementsLocatedBy(
+                        AppiumBy.xpath("//android.widget.ImageView[contains(@content-desc, ':')]")
+                )
+        );
+
+        System.out.println("Total videos found: " + allVideos.size());
+
+        // 2️⃣ Click each video by index
+        for (int index : videoIndices) {
+            if (index < allVideos.size()) {
+                WebElement video = allVideos.get(index);
+                System.out.println("Clicking video at index " + index + " with duration: " + video.getAttribute("content-desc"));
+                video.click();
+
+                // Optional: wait a little for UI to stabilize after click
+                try { Thread.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
+
+            } else {
+                System.out.println("Video index " + index + " not available. Total videos: " + allVideos.size());
+            }
+        }
     }
 
     //when first permission doesn't appear the xpath changes for camera button

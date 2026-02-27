@@ -5,15 +5,17 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import io.appium.java_client.pagefactory.iOSXCUITFindBy;
-import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static io.appium.java_client.CommandExecutionHelper.executeScript;
 
 public class LoginCode {
     private AppiumDriver driver;
@@ -26,82 +28,104 @@ public class LoginCode {
     }
 
 
-    // login
-    @AndroidFindBy(xpath = "//android.widget.Button[@content-desc='Login']")
-    @iOSXCUITFindBy(xpath = "//XCUIElementTypeButton[@name=\"Login\"]")  // <-- Add iOS XPath here
-    private WebElement loginButton;
-
-    // continue with email
-    @AndroidFindBy(xpath = "//android.widget.ImageView[@content-desc='Continue with Email']")
-    @iOSXCUITFindBy(xpath = "//XCUIElementTypeButton[@name=\"email_button\"]")  // iOS XPath
-    private WebElement continueWithEmail;
-
-    // Text fields
-    @AndroidFindBy(xpath = "(//android.widget.EditText)[2]")
-    @iOSXCUITFindBy(xpath = "//XCUIElementTypeTextField[@name=\"Email\"]")  // iOS email field
-    private WebElement emailField;
-
-    @AndroidFindBy(xpath = "(//android.widget.EditText)[4]")
-    @iOSXCUITFindBy(accessibility = "toggle_visibility") // iOS password field
-    private WebElement passwordField;
-
-    @AndroidFindBy(xpath = "//android.widget.Button[@content-desc='Login']")
-    @iOSXCUITFindBy(xpath = "//XCUIElementTypeButton[@name=\"Login\"]")
-    private WebElement finalLoginBtn;
+     //login ui changed
+//    @AndroidFindBy(xpath = "//android.widget.Button[@content-desc='Login']")
+//    @iOSXCUITFindBy(xpath = "//XCUIElementTypeButton[@name=\"Login\"]")  //iOS XPath
+//    private WebElement loginButton;
+//
+//    // continue with email
+//    @AndroidFindBy(xpath = "//android.widget.ImageView[@content-desc='Continue with Email']")
+//    @iOSXCUITFindBy(xpath = "//XCUIElementTypeButton[@name=\"email_button\"]")  // iOS XPath
+//    private WebElement continueWithEmail;
 
     public void enterEmail(String email, String password) throws InterruptedException {
-        wait.until(ExpectedConditions.visibilityOf(loginButton)).click();
-        wait.until(ExpectedConditions.visibilityOf(continueWithEmail)).click();
-        wait.until(ExpectedConditions.visibilityOf(emailField)).sendKeys(email);
-        wait.until(ExpectedConditions.visibilityOf(passwordField)).sendKeys(password);
-        wait.until(ExpectedConditions.visibilityOf(finalLoginBtn)).click();
-    }
 
-
-//    public void enterEmail(String email, String password) throws InterruptedException {
 //        WebElement loginBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(
 //                By.xpath("//android.widget.Button[@content-desc='Login']")));
 //        loginBtn.click();
-//
+
 //        WebElement continueWithEmail = wait.until(ExpectedConditions.visibilityOfElementLocated(
 //                By.xpath("//android.widget.ImageView[@content-desc='Continue with Email']")));
 //        continueWithEmail.click();
-//
-//        WebElement emailField = wait.until(ExpectedConditions.visibilityOfElementLocated(
-//                By.xpath("(//android.widget.EditText)[2]")));
-//        emailField.click();
-//        Thread.sleep(2000);
-//        emailField.sendKeys(email);
-//
-//        WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(
-//                By.xpath("(//android.widget.EditText)[4]")));
-//        passwordField.click();
-//        Thread.sleep(2000);
-//        passwordField.sendKeys(password);
-//
-//        WebElement finalLoginBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(
-//                By.xpath("//android.widget.Button[@content-desc='Login']")));
-//        finalLoginBtn.click();
-//        Thread.sleep(2000);
-//    }
 
-    public void handlePermission(){
+        WebElement emailField = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//android.widget.EditText[@resource-id='email_textfield']/android.widget.EditText")));
+        emailField.click();
+        Thread.sleep(2000);
+        emailField.sendKeys(email);
+
+        WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//android.widget.EditText[@resource-id='toggle_visibility']")));
+        passwordField.click();
+        Thread.sleep(2000);
+        passwordField.sendKeys(password);
+
+
+        WebElement finalLoginBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//android.widget.Button[@content-desc='Login']")));
+        finalLoginBtn.click();
+        Thread.sleep(2000);
+    }
+
+    public void handlePermission() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        //Handle system permission popup
         try {
-            WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(15));
-            WebElement allowButton = shortWait.until(ExpectedConditions.presenceOfElementLocated(
+            WebElement allowButton = wait.until(ExpectedConditions.presenceOfElementLocated(
                     AppiumBy.id("com.android.permissioncontroller:id/permission_allow_button")
             ));
             allowButton.click();
-            System.out.println("Permission popup appeared and 'Allow' was clicked.");
+            System.out.println("System permission popup appeared and 'Allow' was clicked.");
+            // Wait for permission popup to disappear
+            wait.until(ExpectedConditions.invisibilityOf(allowButton));
+            // Wait extra time for toast overlay to disappear
+            Thread.sleep(2500);
+
         } catch (TimeoutException e) {
-            System.out.println("No permission popup appeared.");
+            System.out.println("No system permission popup appeared.");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //Handle Proof Ball popup
+        try {
+            WebElement skipButton = wait.until(ExpectedConditions.elementToBeClickable(
+                    AppiumBy.accessibilityId("Skip")
+            ));
+            //("//android.widget.Button[@content-desc='Skip']")
+            skipButton.click();
+            System.out.println("Register your Proof Ball popup appeared and was clicked.");
+
+            // Wait until Proof Ball popup disappears
+            wait.until(ExpectedConditions.invisibilityOf(skipButton));
+
+            // Extra short wait to ensure UI has stabilized
+            Thread.sleep(500);
+
+        } catch (TimeoutException e) {
+            System.out.println("No Register Proof Ball popup appeared.");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //adding this part cause without this skip button doesn't work
+        try {
+            WebElement contests = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    AppiumBy.accessibilityId("Contests")
+            ));
+            System.out.println("Main screen loaded successfully.");
+        } catch (TimeoutException e) {
+            System.out.println("Main screen (Contests) did not appear in time.");
         }
     }
+
+
     public void CameraGuide(){
         try{
-        WebElement camera=wait.until(ExpectedConditions.presenceOfElementLocated(
-                AppiumBy.xpath("///XCUIElementTypeApplication[@name=\"Fishtechy(Beta)\"]/XCUIElementTypeWindow[1]/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther[2]/XCUIElementTypeOther[3]/XCUIElementTypeOther[2]/XCUIElementTypeOther[4]/XCUIElementTypeOther[2]/XCUIElementTypeImage")));
-                camera.click();
+//        WebElement camera=wait.until(ExpectedConditions.presenceOfElementLocated(
+//                AppiumBy.xpath("///XCUIElementTypeApplication[@name=\"Fishtechy(Beta)\"]/XCUIElementTypeWindow[1]/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther[2]/XCUIElementTypeOther[3]/XCUIElementTypeOther[2]/XCUIElementTypeOther[4]/XCUIElementTypeOther[2]/XCUIElementTypeImage")));
+            WebElement camera=wait.until(ExpectedConditions.presenceOfElementLocated(
+                    AppiumBy.xpath("//android.widget.FrameLayout[@resource-id=\"android:id/content\"]/android.widget.FrameLayout/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View[1]/android.view.View[4]")));
+
+            camera.click();
             System.out.println("first step clicked");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
                wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath
@@ -138,5 +162,16 @@ public class LoginCode {
         } catch (TimeoutException e) {
             System.out.println("No guides were seen");
         }
+    }
+
+    public void logout() throws InterruptedException {
+        //logout
+        // wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.iOSNsPredicateString("type == 'XCUIElementTypeImage'"))).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("//XCUIElementTypeImage[contains(@label, 'Profile')]"))).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("//XCUIElementTypeButton[@name=\"settings_button_button\"]"))).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Logout"))).click();
+        //(//XCUIElementTypeImage[@name="Logout"])
+        wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Logout"))).click();
+        //("//android.widget.Button[@content-desc=\"Logout\"]")
     }
 }
