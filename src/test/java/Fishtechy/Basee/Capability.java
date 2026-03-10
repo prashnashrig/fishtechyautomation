@@ -15,20 +15,13 @@ public class Capability {
     @BeforeMethod
     public void setUp() throws MalformedURLException {
         DesiredCapabilities dc = new DesiredCapabilities();
-//        dc.setCapability("platformName", "Android");
-//        dc.setCapability("appium:deviceName", "Android");
-//        dc.setCapability("appium:automationName", "uiautomator2");
-//        dc.setCapability("appium:appPackage", "io.futrix.flytechy.stg");
-//        dc.setCapability("appium:appActivity", "io.futrix.flytechy.MainActivity");
-//        driver = new AndroidDriver(new URL("http://127.0.0.1:4723"), dc);
+        dc.setCapability("platformName", "Android");
+        dc.setCapability("appium:deviceName", "Android");
+        dc.setCapability("appium:automationName", "uiautomator2");
+        dc.setCapability("appium:appPackage", "io.futrix.flytechy.stg");
+        dc.setCapability("appium:appActivity", "io.futrix.flytechy.MainActivity");
+        driver = new AndroidDriver(new URL("http://127.0.0.1:4723"), dc);
 
-        dc.setCapability("platformName", "iOS");
-        dc.setCapability("appium:automationName", "XCUITest");
-        dc.setCapability("appium:deviceName", "iPhone");
-        dc.setCapability("appium:bundleId", "io.futrix.flytechy.stg");
-       dc.setCapability("appium:udid", "00008110-001C253436C3801E");
-        //dc.setCapability("autoAcceptAlerts", true);    //becoz of this line code was failing
-        driver = new IOSDriver(new URL("http://127.0.0.1:4723/"), dc);
 
         System.out.println("Session started");
 

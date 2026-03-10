@@ -2,9 +2,7 @@ package Fishtechy.PagesIos;
 
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.ios.IOSDriver;
-import org.openqa.selenium.Rectangle;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.support.PageFactory;
@@ -20,7 +18,7 @@ import java.util.List;
 
 //using android driver for keyboard escape
 public class ContestIp {
-     private IOSDriver driver;   //AndroidDriver write this for android
+    private IOSDriver driver;   //AndroidDriver write this for android
     private WebDriverWait wait;
 
     public ContestIp(IOSDriver driver) {
@@ -73,14 +71,8 @@ public class ContestIp {
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Invite Only"))).click();
         System.out.println("accessibility mode selected");
 
-        try {
-            driver.hideKeyboard();  // Best way
-            System.out.println("Keyboard hidden successfully");
-        } catch (Exception e) {
-            // fallback if hideKeyboard fails
-            driver.navigate().back();
-            System.out.println("Keyboard dismissed using back()");
-        }
+        // Safely dismiss the iOS keyboard so lower controls are visible
+        dismissKeyboardIfVisible();
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Create Contest"))).click();
 
         //wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("(//android.widget.Button[@content-desc=\"-Select-\"])[1]"))).click();
@@ -94,20 +86,22 @@ public class ContestIp {
         //wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Proofball with Bumpboard"))).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Proofball"))).click();
 
-        //need to scroll
+        //need to scroll on smaller screens to reach measurement selector and option
+        scrollToAndTap(AppiumBy.xpath("(//XCUIElementTypeButton[@name=\"-Select-\"])[1]"), 2);
+
         wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("(//XCUIElementTypeButton[@name=\"-Select-\"])[1]"))).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Forktail Measurement"))).click();
 
         System.out.println("measurement type selected");
 
-       startDate.click(); //keeping it here cause below function is dependent
-        setTime(12, 15);
+        startDate.click(); //keeping it here cause below function is dependent
+        setTime(12, 50);
 
         System.out.println("start date");
 
         endDate.click();
         //change end date manually cause no dynamic way
-        setTime(3, 21);
+        setTime(3, 30);
         System.out.println("end date");
 
         //wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("//android.widget.Button[@content-desc=\"-Select-\"]"))).click();
@@ -116,14 +110,14 @@ public class ContestIp {
 
 
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Contest Banner"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Choose Photo"))).click();
-      //not seen in iphone
-        //        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Continue"))).click();
-//        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.id("com.android.permissioncontroller:id/permission_allow_all_button"))).click();
+//        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Choose Photo"))).click();
+//        // Scrollable iOS gallery – use scroll‑and‑tap with the exact XPath
+//        scrollToAndTap(AppiumBy.xpath("//XCUIElementTypeImage[@name=\"PXGGridLayout-Info\"]"), 6);
 
-
-        wait.until(ExpectedConditions.elementToBeClickable(
-                AppiumBy.xpath("(//XCUIElementTypeImage[@name=\"PXGGridLayout-Info\"])[1]"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Take a Picture"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("PhotoCapture"))).click();
+        Thread.sleep(1000);
+        wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Use Photo"))).click();
 
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//XCUIElementTypeStaticText[@name=\"Done\"]"))).click();
         //need to scroll
@@ -136,7 +130,7 @@ public class ContestIp {
         //wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Adriatic Brown Trout "))).click();
         WebElement search= wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Search here..")));
         search.click();
-        search.sendKeys("Bull Trout ");
+        search.sendKeys("Bull Trout");
         wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Bull Trout "))).click();
 
 
@@ -154,14 +148,15 @@ public class ContestIp {
 
         for (String inviteeName : inviteeNames) {
             //to invite players
-           // WebElement invite = wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//XCUIElementTypeTextField[@name=\"Search here..\"]")));
+            // WebElement invite = wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//XCUIElementTypeTextField[@name=\"Search here..\"]")));
             WebElement invite = wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.className("XCUIElementTypeTextField")));
             invite.click();
             invite.clear();
             Thread.sleep(500);
             invite.sendKeys(inviteeName);
 
-            driver.hideKeyboard();
+            // Hide keyboard so Invite button is tappable
+            dismissKeyboardIfVisible();
             WebElement inviteBtn = wait.until(ExpectedConditions.elementToBeClickable(
                     AppiumBy.xpath("(//XCUIElementTypeButton[@name=\"Invite\"])[1]")));
             inviteBtn.click();
@@ -185,7 +180,7 @@ public class ContestIp {
     public void logout() {
 
         //logout
-       // wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.iOSNsPredicateString("type == 'XCUIElementTypeImage'"))).click();
+        // wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.iOSNsPredicateString("type == 'XCUIElementTypeImage'"))).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("//XCUIElementTypeImage[contains(@label, 'Profile')]"))).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("//XCUIElementTypeButton[@name=\"settings_button_button\"]"))).click();
         wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Logout"))).click();
@@ -208,6 +203,58 @@ public class ContestIp {
 
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Back"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("//XCUIElementTypeButton[@name=\"Back\"]"))).click();
+    }
+
+    private void dismissKeyboardIfVisible() {
+        try {
+            driver.hideKeyboard();
+            System.out.println("Keyboard hidden via hideKeyboard().");
+            return;
+        } catch (Exception e) {
+            System.out.println("hideKeyboard() failed, trying back(): " + e.getMessage());
+        }
+
+        try {
+            driver.navigate().back();
+            System.out.println("Keyboard dismissed using back().");
+        } catch (Exception ignored) {
+            System.out.println("Keyboard not visible or could not be dismissed.");
+        }
+    }
+
+
+    private void scrollDownIOS() {
+        Dimension size = driver.manage().window().getSize();
+        int startX = size.width / 2;
+        int startY = (int) (size.height * 0.75);
+        int endY   = (int) (size.height * 0.35);
+
+        PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
+        Sequence swipe = new Sequence(finger, 1);
+        swipe.addAction(finger.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), startX, startY));
+        swipe.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()));
+        swipe.addAction(finger.createPointerMove(Duration.ofMillis(600), PointerInput.Origin.viewport(), startX, endY));
+        swipe.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
+
+        driver.perform(Collections.singletonList(swipe));
+    }
+
+    private void scrollToAndTap(By locator, int maxScrolls) {
+        int attempts = 0;
+        while (attempts <= maxScrolls) {
+            try {
+                WebElement el = new WebDriverWait(driver, Duration.ofSeconds(5))
+                        .until(ExpectedConditions.elementToBeClickable(locator));
+                el.click();
+                return;
+            } catch (Exception e) {
+                attempts++;
+                if (attempts > maxScrolls) {
+                    throw new RuntimeException("Could not find/tap element after scrolling: " + locator, e);
+                }
+                scrollDownIOS();
+            }
+        }
     }
 
     public void upload(int videoIndex) {
@@ -297,7 +344,7 @@ public class ContestIp {
                 wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Next"))).click();
                 System.out.println("Clicked Next after Measure Fish completed.");
             }
-                //Released for another
+            //Released for another
             wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Retained"))).click();
             //Final Post
             wait.until(ExpectedConditions.elementToBeClickable(
@@ -426,5 +473,3 @@ public class ContestIp {
     }
 
 }
-
-

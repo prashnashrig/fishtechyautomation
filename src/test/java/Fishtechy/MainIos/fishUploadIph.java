@@ -15,7 +15,7 @@ public class fishUploadIph extends CapabilityIos {
         LoginIos loginPage= new LoginIos((IOSDriver) driver);
         loginPage.enterEmail("testershrig+2@gmail.com", "TestTest");
         loginPage.handlePermission();
-        loginPage.CameraGuide();
+       // loginPage.CameraGuide();
         FishMeasureIp fishMeasureIp=new FishMeasureIp(driver);
         fishMeasureIp.Measure(4);
     }

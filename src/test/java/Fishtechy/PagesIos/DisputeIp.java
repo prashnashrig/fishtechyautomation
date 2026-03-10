@@ -2,7 +2,7 @@ package Fishtechy.PagesIos;
 
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.StaleElementReferenceException;
+import io.appium.java_client.ios.IOSDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -10,11 +10,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-public class FishMeasureIp {
-    private AppiumDriver driver;
+public class DisputeIp {
+    private IOSDriver driver;
     private WebDriverWait wait;
 
-    public FishMeasureIp(AppiumDriver driver) {
+    public DisputeIp(IOSDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
@@ -67,6 +67,8 @@ public class FishMeasureIp {
                 nextBtns.get(0).click();
                 wait.until(ExpectedConditions.elementToBeClickable(
                         AppiumBy.accessibilityId("Next"))).click();
+
+              //  ("//XCUIElementTypeStaticText[@name=\"Done\"]") measurefish button then
             } else {
                 System.out.println("Unuploaded video detected, checking further...");
 
@@ -91,26 +93,51 @@ public class FishMeasureIp {
 
                 // Wait long for Next button after Measure Fish
                 WebDriverWait longWait = new WebDriverWait(driver, Duration.ofSeconds(200));
-                WebElement nextAfterMeasure = longWait.until(
-                        ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Next")));
-                nextAfterMeasure.click();
-                System.out.println("Clicked Next after Measure Fish completed.");
-
+                WebElement dispute = longWait.until(
+                        ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Dispute")));
+                dispute.click();
+                System.out.println("Clicked Dispute after Measure Fish completed.");
             }
+            wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Measurement"))).click();
+           //enter disputed measurement
+            WebElement length = wait.until(ExpectedConditions.elementToBeClickable(
+                    AppiumBy.xpath("//XCUIElementTypeApplication[@name=\"Fishtechy(Stg)\"]/XCUIElementTypeWindow[1]/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther[2]/XCUIElementTypeOther[2]/XCUIElementTypeOther[3]/XCUIElementTypeOther/XCUIElementTypeOther[2]/XCUIElementTypeOther[4]/XCUIElementTypeOther[2]/XCUIElementTypeOther[2]/XCUIElementTypeTextField[2]")));
+            length.click();
+            length.sendKeys("12");
+            //tap something to hide keyboard
+           // wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Upload picture or video of fish with Bump board or Tape Measure (Optional)"))).click();
+           dismissKeyboardIfVisible();
+            wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("Submit"))).click();
+            wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.xpath("Go to Folder"))).click();
 
-            //Released for another
-            wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Retained"))).click();
-
-            //Final Post
-            wait.until(ExpectedConditions.elementToBeClickable(
-                    AppiumBy.xpath("//XCUIElementTypeButton[@name=\"Post\"]"))).click();
-            System.out.println("Post clicked successfully.");
-
+            //Handle tutorial popup
+            try {
+                List<WebElement> popup = driver.findElements(AppiumBy.accessibilityId("measurement_tutorial_popup_close_button_button"));
+                if (!popup.isEmpty()) {
+                    popup.get(0).click();
+                    System.out.println("Popup appeared and handled.");
+                } else {
+                    System.out.println("No popup appeared.");
+                }
+            } catch (Exception e) {
+                System.out.println("Popup handling skipped: " + e.getMessage());
+            }
+            //now see disputed tab and status
         } catch (Exception e) {
             System.out.println("Flow handling failed: " + e.getMessage());
             throw e;
         }
+    wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("disputed"))).click();
+        //("close_gallery_button")
     }
 
 
+    private void dismissKeyboardIfVisible() {
+        try {
+            driver.hideKeyboard();
+            System.out.println("Keyboard hidden via hideKeyboard().");
+            return;
+        } catch (Exception e) {
+            System.out.println("hideKeyboard() failed, trying back(): " + e.getMessage());
+        }}
 }

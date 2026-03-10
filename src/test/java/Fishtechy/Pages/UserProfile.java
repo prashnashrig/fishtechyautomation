@@ -30,7 +30,7 @@ public class UserProfile {
     @AndroidFindBy(xpath = "Tab 3 of 4\\nsaved")
     private WebElement saved;
 
-    @AndroidFindBy(xpath = "Edit Profile")
+    @AndroidFindBy(accessibility = "Edit Profile")
     private WebElement edit;
 
     @AndroidFindBy(xpath = "//android.widget.EditText[@text=\"Test\"]")

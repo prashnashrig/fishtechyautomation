@@ -43,7 +43,7 @@ import java.util.List;
                 // Login
                 loginPage.enterEmail(users.get(i).email, users.get(i).password);
                 loginPage.handlePermission();
-                    loginPage.CameraGuide();
+                   // loginPage.CameraGuide();
 
                 // Upload fish
                 fishMeasure.Measure(2); //index i, i=1 or 2 or 3

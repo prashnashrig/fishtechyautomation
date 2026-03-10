@@ -42,7 +42,9 @@ public class LoginIos {
 //        wait.until(ExpectedConditions.visibilityOf(continueWithEmail)).click();
         wait.until(ExpectedConditions.visibilityOf(emailField)).sendKeys(email);
         wait.until(ExpectedConditions.visibilityOf(passwordField)).sendKeys(password);
-        driver.hideKeyboard();
+        //driver.navigate().back();
+        WebElement back=wait.until(ExpectedConditions.elementToBeClickable(AppiumBy.accessibilityId("Or continue with")));
+        back.click();
         wait.until(ExpectedConditions.visibilityOf(finalLoginBtn)).click();
 
     }
@@ -97,52 +99,6 @@ public class LoginIos {
         }
     }
 
-
-    public void CameraGuide(){
-        try{
-//        WebElement camera=wait.until(ExpectedConditions.presenceOfElementLocated(
-//                AppiumBy.xpath("///XCUIElementTypeApplication[@name=\"Fishtechy(Beta)\"]/XCUIElementTypeWindow[1]/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther[2]/XCUIElementTypeOther[3]/XCUIElementTypeOther[2]/XCUIElementTypeOther[4]/XCUIElementTypeOther[2]/XCUIElementTypeImage")));
-            WebElement camera=wait.until(ExpectedConditions.presenceOfElementLocated(
-                    AppiumBy.xpath("//android.widget.FrameLayout[@resource-id=\"android:id/content\"]/android.widget.FrameLayout/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View[1]/android.view.View[4]")));
-
-            camera.click();
-            System.out.println("first step clicked");
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-            wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath
-                    ("//android.view.View[@content-desc=\"Measure fish directly from your saved photos or videos.\"]/android.view.View"))).click();
-            System.out.println("second step clicked");
-            wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath
-                    ("//android.widget.FrameLayout[@resource-id=\"android:id/content\"]/android.widget.FrameLayout/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View[1]/android.view.View[4]"))).click();
-            System.out.println("long pressed camera");
-            wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Continue"))).click();
-            System.out.println("clicked continue");
-
-            for (int i = 0; i < 3; i++) {
-                try {
-                    WebElement allowBtn = wait.until(ExpectedConditions.elementToBeClickable(
-                            AppiumBy.id("com.android.permissioncontroller:id/permission_allow_foreground_only_button")
-                    ));
-                    allowBtn.click();
-                } catch (StaleElementReferenceException e) {
-                    WebElement allowBtn = driver.findElement(
-                            AppiumBy.id("com.android.permissioncontroller:id/permission_allow_foreground_only_button")
-                    );
-                    allowBtn.click();
-                }    //three same permissions in a row so
-            }   //trying this cause the code breakout after several run saying stale element reference exception
-
-            wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("//android.view.View[@content-desc=\"Turn on Auto-Measure to let the app measure your catch automatically.\"]/android.view.View"))).click();
-            System.out.println("auto measure guide clicked");
-            wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.accessibilityId("Done"))).click();
-            System.out.println("guide mode done clicked");
-            //android.view.View[@content-desc="Done"]
-
-            //wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.id("close_button"))).click();
-            wait.until(ExpectedConditions.presenceOfElementLocated(AppiumBy.xpath("//android.widget.Button[@resource-id=\"close_button\"]"))).click();
-        } catch (TimeoutException e) {
-            System.out.println("No guides were seen");
-        }
-    }
 
     public void logout() throws InterruptedException {
         //logout

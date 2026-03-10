@@ -18,7 +18,7 @@ public class Login extends CapabilityIos {
         loginPage.handlePermission();
         Thread.sleep(500);
         Thread.sleep(500);
-        loginPage.CameraGuide();
+        //loginPage.CameraGuide();
 
     }
 }
